@@ -24,7 +24,11 @@ export class PlayerService {
     this.playerDb = this.db.list('/players', ref => ref.orderByChild('name'))
   }
 
-  getPlayers(): Observable<Player[]> {
+  /**
+   * Retorna una lista de tipo Player
+   * @returns Retorna un listado de Player
+   */
+  getPlayers(): Observable<Player[]> {  
     return this.playerDb.snapshotChanges().pipe(
       map(changes => {
         return changes.map(c => ({ $key: c.payload.key, ... c.payload.val() } as Player))
