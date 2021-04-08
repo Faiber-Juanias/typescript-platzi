@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "typescript-platzi-b5c2f": {
+      "hosting": {
+        "typescript-platzi": [
+          "typescript-platzi-b5c2f"
+        ]
+      }
+    }
+  }
+}
