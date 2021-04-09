@@ -53,7 +53,7 @@ export class TeamService {
    */
   deleteTeam(id: string) {
     // Lista 'teams' y elimina por medio del id
-    this.db.list('/teams').remove(id)
+    this.db.list('/teams').remove(id);
   }
 
   /**
@@ -63,9 +63,9 @@ export class TeamService {
   editTeam(newTeamData) {
     const $key = newTeamData.$key;
     // Elimina la key del 'team' que existe
-    delete(newTeamData.$key)
+    delete(newTeamData.$key);
     // Actualiza el 'team'
-    this.db.list('/teams').update($key, newTeamData)
+    this.db.list('/teams').update($key, newTeamData);
   }
 
 }
