@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { take } from 'rxjs/operators';
-import { Countries, SquadNumber } from '../interfaces/player';
+import { Countries, Player, SquadNumber } from '../interfaces/player';
 import { PlayerService } from '../services/player.service';
 import { TeamService } from '../services/team.service';
 
@@ -11,6 +11,9 @@ import { TeamService } from '../services/team.service';
   styleUrls: ['./player-dialog.component.scss']
 })
 export class PlayerDialogComponent implements OnInit {
+
+  @Input() player: Player;
+  @Output() closeDialog: EventEmitter<boolean> = new EventEmitter();
 
   private team;
   public countries = Object.keys(Countries).map(key => ({ label: key, key: Countries[key] }));
@@ -48,13 +51,38 @@ export class PlayerDialogComponent implements OnInit {
     this.teamService.editTeam(formattedTeam);
   }
 
+  private editPlayer(playerFormValue) {
+    const playerFormValueWithKey = { ...playerFormValue, $key: this.player.$key };
+    const playerFormValueWithFormattedKey = { ...playerFormValue, key: this.player.$key };
+    delete playerFormValueWithFormattedKey.$key;
+    const modifierPlayers = this.team.players 
+      ? this.team.players.map(player => {
+          return player.key === this.player.$key ? playerFormValueWithFormattedKey : player;
+        })
+      : this.team.players;
+    const formattedTeam = {
+      ...this.team,
+      players: [...(modifierPlayers ? modifierPlayers : [playerFormValueWithFormattedKey])]
+    };
+    this.playerService.editPlayer(playerFormValueWithKey);
+    this.teamService.editTeam(formattedTeam);
+  }
+
   onSubmit(playerForm: NgForm) {
     const playerFormValue = {...playerForm.value};
     if (playerForm.valid) {
       playerFormValue.leftFooted = playerFormValue.leftFooted === '' ? false : playerFormValue.leftFooted;
     }
-    this.newPlayer(playerFormValue);
+    if (this.player) {
+      this.editPlayer(playerFormValue);
+    } else {
+      this.newPlayer(playerFormValue);
+    }
     window.location.replace('#');
+  }
+
+  onClose() {
+    this.closeDialog.emit(true);
   }
 
 }
