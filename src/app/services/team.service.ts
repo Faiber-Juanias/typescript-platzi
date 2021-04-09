@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Team } from '../interfaces/team';
 
-export const TeamsTableHeaders = ['name', 'country', 'players']
+export const TeamsTableHeaders = ['Name', 'Country', 'Players']
 
 @Injectable({
   providedIn: 'root'
@@ -30,21 +30,21 @@ export class TeamService {
    * Retorna una lista de tipo Team
    * @returns Retorna un listado de Team
    */
-  getTeams(): Observable<Team[]> {  
+  getTeams(): Observable<Team[]> {
     return this.teamDb.snapshotChanges().pipe(
       map(changes => {
-        return changes.map(c => ({ $key: c.payload.key, ... c.payload.val() } as Team))
+        return changes.map(c => ({ $key: c.payload.key, ... c.payload.val() } as Team));
       })
-    )
+    );
   }
 
   /**
    * Permite a gregar un nuevo 'team'
    * @param team Recibe el tipo team a agregar
-   * @returns 
+   * @returns //
    */
   addTeam(team: Team) {
-    return this.teamDb.push(team)
+    return this.teamDb.push(team);
   }
 
   /**
